@@ -1,3 +1,4 @@
+'use strict'
 var carList = [
     { id: 1, brand: 'BMW', model: '5 Series'},
     { id: 2, brand: 'Audi', model: 'A4'},

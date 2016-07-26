@@ -1,5 +1,7 @@
+'use strict'
 var express = require('express'),
     app = express(),
+    path = require('path'),
     favicon = require('serve-favicon'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
@@ -9,7 +11,8 @@ var express = require('express'),
     accountController = require('./controllers/account');
 
 //mongoose.connect(config.database);
-app.set('superSecret', config.secret);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({extended : false}));
@@ -18,9 +21,10 @@ app.use(bodyParser.json());
 app.use(favicon(__dirname + '/favicon.ico'));
 app.use(logger('dev'));
 
-// ROUTES
+//////////////////////ROUTES
 app.use('/api',mainroute);
-// app.use('/account/authenticate',accountController.authenticate);
+
+//////////////////////ERROR HANDLERS
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -29,12 +33,30 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-/// error handlers
-
 // development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
+
+if (app.get('env') === 'development') {   
     app.use(function(err, req, res, next) {
+        console.log(err);
+        var errorType = typeof err,
+            code = 500,
+            msg = { message: "Internal Server Error" };
+        
+        switch (err.name) {
+            case "UnauthorizedError":
+                code = err.status;
+                msg = undefined;
+                break;
+            case "BadRequestError":
+            case "UnauthorizedAccessError":
+            case "NotFoundError":
+                code = err.status;
+                msg = err.inner;
+                break;
+            default:
+                break;
+        }
+
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -42,15 +64,5 @@ if (app.get('env') === 'development') {
         });
     });
 }
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
 
 module.exports = app;

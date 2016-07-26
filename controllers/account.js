@@ -1,3 +1,4 @@
+'use strict'
 var userModel = require('../models/users'),
     jwt = require('jsonwebtoken'),
     config = require('../config');
@@ -16,7 +17,15 @@ var authenticate = (req, res) => {
             var token = jwt.sign(user, config.secret, {
                 expiresIn: 60*60*24
             });
-            res.json({success: true, message: 'Enjoy your token!', token: token });
+            res.json({
+                success: true, 
+                message: 'Enjoy your token!',               
+                user : { 
+                    username : user.username ,
+                    role : user.role,
+                    token: token
+                    }
+                });
         }
     }
     catch(ex){

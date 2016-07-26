@@ -1,5 +1,5 @@
+'use strict'
 var carModel = require('../models/cars');
-
 
 var getCars = (req,res,next) =>{
     res.json(carModel.getCars());

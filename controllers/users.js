@@ -1,3 +1,4 @@
+'use strict'
 var userModel = require('../models/users');
 
 var getUsers = (req,res,next) => {
