@@ -6,9 +6,7 @@ var express = require('express'),
     //mongoose = require('mongoose'),
     config = require('./config'),
     mainroute = require('./routes/index'),
-    carsroute = require('./routes/cars'),
-    usersroute = require('./routes/users'),
-    accountroute = require('./routes/account');
+    accountController = require('./controllers/account');
 
 //mongoose.connect(config.database);
 app.set('superSecret', config.secret);
@@ -22,9 +20,7 @@ app.use(logger('dev'));
 
 // ROUTES
 app.use('/api',mainroute);
-// app.use('/api',carsroute);
-// app.use('/api',usersroute);
-// app.use('/api',accountroute);
+// app.use('/account/authenticate',accountController.authenticate);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

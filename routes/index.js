@@ -2,7 +2,11 @@ var express = require('express'),
     router = express.Router(),
     carController = require('../controllers/cars'),
     accountController = require('../controllers/account'),
-    userController = require('../controllers/users');
+    userController = require('../controllers/users'),
+    authenticationMW = require('../middlewares/authentication');
+
+//incluir os routes que se quer proteger com o token
+router.use(['/cars', '/users'],authenticationMW.tokenVerification);
 
 router.get('/', (req, res) => {
   res.send("home");
